@@ -1,0 +1,37 @@
+[project]
+name = "jupyterhub-cost-monitoring"
+version = "0.1.0"
+description = "This tool provides a per-user cost reporting system for JupyterHubs running on AWS, enabling hub administrators to monitor costs associated with each user. This approach delivers cloud observability and cost transparency that can be reliably deployed using Kubernetes and integrated with Zero to JupyterHub distributions."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.39.12",
+    "escapism",
+    "fastapi[standard]>=0.116.1",
+    "flask>=3.1.1",
+    "pandas>=2.3.1",
+    "requests>=2.32.4",
+    "yarl>=1.20.1",
+    "google-cloud-bigquery>=3.25.0",
+    "google-auth>=2.35.0",
+    "google-auth-oauthlib>=1.2.1",
+    "google-auth-httplib2>=0.2.0",
+    "psycopg2-binary>=2.9.10",
+]
+
+[dependency-groups]
+dev = [
+    "mystmd>=1.6.0",
+    "pytest>=8.4.1",
+    "ruff>=0.12.5",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.uv.sources]
+escapism = { git = "https://github.com/jupyterhub/escapism", tag = "1.0.1" }
+
+[pytest]
+log_cli = true
+log_cli_level = "INFO"
