@@ -1,0 +1,685 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 255,
+  "links": [
+    {
+      "title": "Community Hub Guide",
+      "type": "link",
+      "url": "https://docs.2i2c.org/admin/monitoring/"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Total costs by group are summed over the time period selected.\n\n*Note:* Users with multiple group memberships are double-counted. E.g. if user 1 is a member of group 1 and group 2, then the user's individual costs are included in the total sum for group 1 and group 2. To avoid double-counting, assign each user to a unique group.\n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "displayMode": "basic",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "text"
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "cost",
+              "text": "Cost",
+              "type": "number"
+            },
+            {
+              "selector": "usergroup",
+              "text": "Group",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/total-costs-per-group?from=${__from:date}&to=${__to:date}&hub=$hub_user&usergroup=&usergroup",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Total by Group",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Cost": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "Group": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "asc": true,
+                "field": "Group"
+              }
+            ]
+          }
+        },
+        {
+          "id": "transpose"
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "List of users with multiple group memberships.\n\n*Note:* Users with multiple group memberships are double-counted. E.g. if user 1 is a member of group 1 and group 2, then the user's individual costs are included in the total sums of each group. To avoid double-counting, assign each user to a unique group.\n",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "targets": [
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/users-with-multiple-groups?&hub_name=$hub_user",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Users with multiple group memberships",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "hub": 1,
+              "username": 0
+            },
+            "orderByMode": "manual",
+            "renameByName": {
+              "hub": "Hub",
+              "username": "User"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Users with no group memberships assigned. This could mean:\n\n  - this user has not logged into the hub, since user group memberships are updated during the authorization flow\n  - this user used to be assigned a group and has since been removed.\n",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "targets": [
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/users-with-no-groups?&hub_name=$hub_user",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Users with no group memberships",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "hub": 1,
+              "username": 0
+            },
+            "orderByMode": "manual",
+            "renameByName": {
+              "hub": "Hub",
+              "username": "User"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows daily group costs by hub by groups.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "barWidth": 0.9,
+        "fullHighlight": false,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "showValue": "never",
+        "stacking": "normal",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "xTickLabelSpacing": 100
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "repeat": "hub_user",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "cost",
+              "text": "Cost",
+              "type": "number"
+            },
+            {
+              "selector": "usergroup",
+              "text": "Group",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/total-costs-per-group?from=${__from:date}&to=${__to:date}&hub=$hub_user&usergroup=$usergroup",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Total costs by group (Hub – $hub_user)",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Cost": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "Date": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Group": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^Cost \\(sum\\)\\s*(.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "yesoreyeram-infinity-datasource",
+          "value": "PC3988D4F1D604C00"
+        },
+        "hide": 2,
+        "name": "infinity_datasource",
+        "options": [],
+        "query": "yesoreyeram-infinity-datasource",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "prometheus",
+          "value": "P1809F7CD0C75ACF3"
+        },
+        "hide": 2,
+        "name": "prometheus_datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "data100-prod",
+          "value": "data100-prod"
+        },
+        "description": "",
+        "label": "hub",
+        "name": "hub_user",
+        "options": [
+          {
+            "selected": false,
+            "text": "biology-prod",
+            "value": "biology-prod"
+          },
+          {
+            "selected": false,
+            "text": "datahub-prod",
+            "value": "datahub-prod"
+          },
+          {
+            "selected": true,
+            "text": "data100-prod",
+            "value": "data100-prod"
+          },
+          {
+            "selected": false,
+            "text": "data8-prod",
+            "value": "data8-prod"
+          },
+          {
+            "selected": false,
+            "text": "data101-prod",
+            "value": "data101-prod"
+          },
+          {
+            "selected": false,
+            "text": "data102-prod",
+            "value": "data102-prod"
+          },
+          {
+            "selected": false,
+            "text": "a11y-prod",
+            "value": "a11y-prod"
+          },
+          {
+            "selected": false,
+            "text": "cee-prod",
+            "value": "cee-prod"
+          },
+          {
+            "selected": false,
+            "text": "julia-prod",
+            "value": "julia-prod"
+          },
+          {
+            "selected": false,
+            "text": "ischool-prod",
+            "value": "ischool-prod"
+          },
+          {
+            "selected": false,
+            "text": "astro-prod",
+            "value": "astro-prod"
+          },
+          {
+            "selected": false,
+            "text": "nature-prod",
+            "value": "nature-prod"
+          },
+          {
+            "selected": false,
+            "text": "prob140-prod",
+            "value": "prob140-prod"
+          },
+          {
+            "selected": false,
+            "text": "dlab-prod",
+            "value": "dlab-prod"
+          },
+          {
+            "selected": false,
+            "text": "publichealth-prod",
+            "value": "publichealth-prod"
+          },
+          {
+            "selected": false,
+            "text": "stat20-prod",
+            "value": "stat20-prod"
+          },
+          {
+            "selected": false,
+            "text": "stat159-prod",
+            "value": "stat159-prod"
+          },
+          {
+            "selected": false,
+            "text": "r-prod",
+            "value": "r-prod"
+          }
+        ],
+        "query": "biology-prod, datahub-prod, data100-prod, data8-prod, data101-prod, data102-prod, a11y-prod, cee-prod, julia-prod, ischool-prod, astro-prod, nature-prod, prob140-prod, dlab-prod, publichealth-prod, stat20-prod, stat159-prod, r-prod",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": "All"
+        },
+        "label": "group",
+        "name": "usergroup",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "All"
+          }
+        ],
+        "query": "All",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "Group cloud costs",
+  "uid": "cloud-cost-groups",
+  "version": 27
+}

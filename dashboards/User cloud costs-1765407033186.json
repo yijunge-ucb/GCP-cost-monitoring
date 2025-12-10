@@ -1,0 +1,570 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 253,
+  "links": [
+    {
+      "title": "Community Hub Guide",
+      "type": "link",
+      "url": "https://docs.2i2c.org/admin/monitoring/"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows the top users by cost across all hubs and components over the selected time period.\n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "displayMode": "basic",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "text"
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "cost",
+              "text": "Cost",
+              "type": "number"
+            },
+            {
+              "selector": "user",
+              "text": "User",
+              "type": "string"
+            },
+            {
+              "selector": "usergroup",
+              "text": "Group",
+              "type": "string"
+            },
+            {
+              "selector": "component",
+              "text": "Component",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/costs-per-user?from=${__from:date}&to=${__to:date}&hub=$hub_user&limit=$limit",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Top Users",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Cost": {
+                "aggregations": [
+                  "firstNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "Date": {
+                "aggregations": [
+                  "firstNotNull"
+                ],
+                "operation": "groupby"
+              },
+              "User": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "date": {
+                "aggregations": []
+              },
+              "user": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "value": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Cost (firstNotNull)": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              },
+              "User": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "desc": true,
+                "field": "Cost (firstNotNull) (sum)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": "5"
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows daily user costs by hub, with a total across all hubs and components shown by default.\n\nTry toggling the *hub* and *component* variable dropdown above to drill down per user costs. Note that user-independent components are excluded, and only user-dependent components such as compute and home storage are shown.\n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.9,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "orientation": "auto",
+        "showValue": "never",
+        "stacking": "normal",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
+      },
+      "pluginVersion": "12.0.1+security-01",
+      "repeat": "hub_user",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "cost",
+              "text": "Cost",
+              "type": "number"
+            },
+            {
+              "selector": "user",
+              "text": "User",
+              "type": "string"
+            },
+            {
+              "selector": "usergroup",
+              "text": "Group",
+              "type": "string"
+            },
+            {
+              "selector": "component",
+              "text": "Component",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "${infinity_datasource}"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "simple",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "http://jupyterhub-cost-monitoring-webserver.support.svc.cluster.local/costs-per-user?from=${__from:date}&to=${__to:date}&hub=$hub_user&component=$component",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Costs Per User (Hub – $hub_user, Component – $component)",
+      "transformations": [
+        {
+          "id": "formatTime",
+          "options": {
+            "outputFormat": "MMM DD",
+            "timeField": "Date",
+            "timezone": "utc",
+            "useTimezone": true
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Cost": {
+                "aggregations": [
+                  "firstNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "Date": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "User": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "groupingToMatrix",
+          "options": {
+            "columnField": "User",
+            "emptyValue": "zero",
+            "rowField": "Date",
+            "valueField": "Cost (firstNotNull)"
+          }
+        }
+      ],
+      "type": "barchart"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "datahub-prod",
+          "value": "datahub-prod"
+        },
+        "description": "",
+        "label": "hub",
+        "name": "hub_user",
+        "options": [
+          {
+            "selected": false,
+            "text": "biology-prod",
+            "value": "biology-prod"
+          },
+          {
+            "selected": true,
+            "text": "datahub-prod",
+            "value": "datahub-prod"
+          },
+          {
+            "selected": false,
+            "text": "data100-prod",
+            "value": "data100-prod"
+          },
+          {
+            "selected": false,
+            "text": "data8-prod",
+            "value": "data8-prod"
+          },
+          {
+            "selected": false,
+            "text": "data101-prod",
+            "value": "data101-prod"
+          },
+          {
+            "selected": false,
+            "text": "data102-prod",
+            "value": "data102-prod"
+          },
+          {
+            "selected": false,
+            "text": "a11y-prod",
+            "value": "a11y-prod"
+          },
+          {
+            "selected": false,
+            "text": "cee-prod",
+            "value": "cee-prod"
+          },
+          {
+            "selected": false,
+            "text": "julia-prod",
+            "value": "julia-prod"
+          },
+          {
+            "selected": false,
+            "text": "ischool-prod",
+            "value": "ischool-prod"
+          },
+          {
+            "selected": false,
+            "text": "astro-prod",
+            "value": "astro-prod"
+          },
+          {
+            "selected": false,
+            "text": "nature-prod",
+            "value": "nature-prod"
+          },
+          {
+            "selected": false,
+            "text": "prob140-prod",
+            "value": "prob140-prod"
+          },
+          {
+            "selected": false,
+            "text": "dlab-prod",
+            "value": "dlab-prod"
+          },
+          {
+            "selected": false,
+            "text": "publichealth-prod",
+            "value": "publichealth-prod"
+          },
+          {
+            "selected": false,
+            "text": "stat20-prod",
+            "value": "stat20-prod"
+          },
+          {
+            "selected": false,
+            "text": "stat159-prod",
+            "value": "stat159-prod"
+          },
+          {
+            "selected": false,
+            "text": "r-prod",
+            "value": "r-prod"
+          }
+        ],
+        "query": "biology-prod, datahub-prod, data100-prod, data8-prod, data101-prod, data102-prod, a11y-prod, cee-prod, julia-prod, ischool-prod, astro-prod, nature-prod, prob140-prod, dlab-prod, publichealth-prod, stat20-prod, stat159-prod, r-prod",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": "All"
+        },
+        "name": "component",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "All"
+          },
+          {
+            "selected": false,
+            "text": "filestore",
+            "value": "filestore"
+          },
+          {
+            "selected": false,
+            "text": "compute",
+            "value": "compute"
+          }
+        ],
+        "query": "All, filestore, compute",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "10",
+          "value": "10"
+        },
+        "description": "Limit display to top N users. Leave empty to show all.",
+        "label": "Number of users",
+        "name": "limit",
+        "options": [
+          {
+            "selected": true,
+            "text": "10",
+            "value": "10"
+          }
+        ],
+        "query": "10",
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "text": "yesoreyeram-infinity-datasource",
+          "value": "PC3988D4F1D604C00"
+        },
+        "hide": 2,
+        "name": "infinity_datasource",
+        "options": [],
+        "query": "yesoreyeram-infinity-datasource",
+        "refresh": 1,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "User cloud costs",
+  "uid": "cloud-cost-users",
+  "version": 38
+}
